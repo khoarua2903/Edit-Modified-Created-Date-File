@@ -1,4 +1,4 @@
-# File Date Modifier
+# Edit Modified and Created Date File
 
 This project provides a GUI tool for modifying the creation and modification dates of files using Python and Tkinter.
 
@@ -11,16 +11,15 @@ This project provides a GUI tool for modifying the creation and modification dat
 ## Requirements
 
 - Python 3.x
-- Tkinter
-- `os`, `datetime`, `subprocess` modules (these are part of the Python standard library)
+- Tkinter (part of the Python standard library)
 
 ## Installation
 
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/username/repository-name.git
-    cd repository-name
+    git clone https://github.com/khoarua2903/Edit-Modified-Created-Date-File.git
+    cd Edit-Modified-Created-Date-File
     ```
 
 2. Install the required packages:
