@@ -3,6 +3,7 @@ import datetime
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog, messagebox
+from tkcalendar import DateEntry
 import subprocess
 
 def center_window(root):
@@ -36,9 +37,7 @@ def update_file_info(file_path):
     modified_date_var.set(modified_date.strftime('%Y-%m-%d %H:%M:%S'))
 
 def clear_input_time():
-    year_var.set('')
-    month_var.set('')
-    day_var.set('')
+    date_entry.set_date(datetime.datetime.now())
     hour_var.set('')
     minute_var.set('')
     second_var.set('')
@@ -57,36 +56,14 @@ def apply_changes():
         return
 
     current_date = datetime.datetime.now()
+    selected_date = date_entry.get_date()
 
-    if not year_var.get():
-        messagebox.showerror("Error", "Missing data in Year field.")
-        return
-    if not month_var.get():
-        messagebox.showerror("Error", "Missing data in Month field.")
-        return
-    if not day_var.get():
-        messagebox.showerror("Error", "Missing data in Day field.")
-        return
-    if not hour_var.get():
-        messagebox.showerror("Error", "Missing data in Hour field.")
-        return
-    if not minute_var.get():
-        messagebox.showerror("Error", "Missing data in Minute field.")
-        return
-    if not second_var.get():
-        messagebox.showerror("Error", "Missing data in Second field.")
-        return
-
-    year = int(year_var.get())
-    month = int(month_var.get())
-    day = int(day_var.get())
-
-    if not validate_date(year, month, day):
-        messagebox.showerror("Error", f"Invalid date: {year}-{month}-{day}.")
+    if not hour_var.get() or not minute_var.get() or not second_var.get():
+        messagebox.showerror("Error", "Please fill in all time fields.")
         return
 
     new_date = datetime.datetime(
-        year, month, day,
+        selected_date.year, selected_date.month, selected_date.day,
         int(hour_var.get()), int(minute_var.get()), int(second_var.get())
     )
 
@@ -116,60 +93,43 @@ created_date_var = tk.StringVar()
 modified_date_var = tk.StringVar()
 action_var = tk.StringVar(value="Created")
 
-# Move "Selected File" and "Import File" to the top
 ttk.Label(main_frame, text="File:").grid(row=0, column=0, sticky=tk.W, padx=2, pady=2)
 ttk.Entry(main_frame, textvariable=file_path_var, width=40).grid(row=0, column=1, sticky=(tk.W, tk.E), padx=2, pady=2)
 ttk.Button(main_frame, text="Import", command=import_file).grid(row=0, column=2, padx=2, pady=2)
 
-# Move "Created" and "Modified" radiobuttons to the second row
 ttk.Label(main_frame, text="Action:").grid(row=1, column=0, sticky=tk.W, padx=2, pady=2)
 action_frame = ttk.Frame(main_frame)
 action_frame.grid(row=1, column=1, columnspan=2, sticky=tk.W)
 ttk.Radiobutton(action_frame, text="Created", variable=action_var, value="Created").grid(row=0, column=0, padx=2, pady=2)
 ttk.Radiobutton(action_frame, text="Modified", variable=action_var, value="Modified").grid(row=0, column=1, padx=2, pady=2)
 
-# Created Date and Modified Date
 ttk.Label(main_frame, text="Created:").grid(row=2, column=0, sticky=tk.W, padx=2, pady=2)
 ttk.Entry(main_frame, textvariable=created_date_var, state='readonly', width=30).grid(row=2, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=2, pady=2)
 
 ttk.Label(main_frame, text="Modified:").grid(row=3, column=0, sticky=tk.W, padx=2, pady=2)
 ttk.Entry(main_frame, textvariable=modified_date_var, state='readonly', width=30).grid(row=3, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=2, pady=2)
 
-# Day, Month, Year
-ttk.Label(main_frame, text="Day:").grid(row=4, column=0, sticky=tk.W, padx=2, pady=2)
-ttk.Label(main_frame, text="Month:").grid(row=4, column=1, sticky=tk.W, padx=2, pady=2)
-ttk.Label(main_frame, text="Year:").grid(row=4, column=2, sticky=tk.W, padx=2, pady=2)
+ttk.Label(main_frame, text="Select Date:").grid(row=4, column=0, sticky=tk.W, padx=2, pady=2)
+date_entry = DateEntry(main_frame, width=19, background='darkblue', foreground='white', borderwidth=2)
+date_entry.grid(row=4, column=1, columnspan=2, sticky=(tk.W, tk.E), padx=2, pady=2)
 
-day_var = tk.StringVar()
-month_var = tk.StringVar()
-year_var = tk.StringVar()
 hour_var = tk.StringVar()
 minute_var = tk.StringVar()
 second_var = tk.StringVar()
 
-current_year = datetime.datetime.now().year
-years = list(range(current_year, 1979, -1))
+ttk.Label(main_frame, text="Hour:").grid(row=5, column=0, sticky=tk.W, padx=2, pady=2)
+ttk.Label(main_frame, text="Minute:").grid(row=5, column=1, sticky=tk.W, padx=2, pady=2)
+ttk.Label(main_frame, text="Second:").grid(row=5, column=2, sticky=tk.W, padx=2, pady=2)
 
-ttk.Combobox(main_frame, textvariable=day_var, values=list(range(1, 32)), width=5).grid(row=5, column=0, sticky=(tk.W, tk.E), padx=2, pady=2)
-ttk.Combobox(main_frame, textvariable=month_var, values=list(range(1, 13)), width=5).grid(row=5, column=1, sticky=(tk.W, tk.E), padx=2, pady=2)
-ttk.Combobox(main_frame, textvariable=year_var, values=years, width=5).grid(row=5, column=2, sticky=(tk.W, tk.E), padx=2, pady=2)
-
-# Hour, Minute, Second
-ttk.Label(main_frame, text="Hour:").grid(row=6, column=0, sticky=tk.W, padx=2, pady=2)
-ttk.Label(main_frame, text="Minute:").grid(row=6, column=1, sticky=tk.W, padx=2, pady=2)
-ttk.Label(main_frame, text="Second:").grid(row=6, column=2, sticky=tk.W, padx=2, pady=2)
-
-ttk.Combobox(main_frame, textvariable=hour_var, values=list(range(0, 24)), width=5).grid(row=7, column=0, sticky=(tk.W, tk.E), padx=2, pady=2)
-ttk.Combobox(main_frame, textvariable=minute_var, values=list(range(0, 60)), width=5).grid(row=7, column=1, sticky=(tk.W, tk.E), padx=2, pady=2)
-ttk.Combobox(main_frame, textvariable=second_var, values=list(range(0, 60)), width=5).grid(row=7, column=2, sticky=(tk.W, tk.E), padx=2, pady=2)
+ttk.Combobox(main_frame, textvariable=hour_var, values=list(range(0, 24)), width=5).grid(row=6, column=0, sticky=(tk.W, tk.E), padx=2, pady=2)
+ttk.Combobox(main_frame, textvariable=minute_var, values=list(range(0, 60)), width=5).grid(row=6, column=1, sticky=(tk.W, tk.E), padx=2, pady=2)
+ttk.Combobox(main_frame, textvariable=second_var, values=list(range(0, 60)), width=5).grid(row=6, column=2, sticky=(tk.W, tk.E), padx=2, pady=2)
 
 button_frame = ttk.Frame(main_frame)
-button_frame.grid(row=8, column=0, columnspan=3, sticky=(tk.E), padx=2, pady=2)
+button_frame.grid(row=7, column=0, columnspan=3, sticky=(tk.E), padx=2, pady=2)
 
 ttk.Button(button_frame, text="Clear", command=clear_input_time).grid(row=0, column=0, padx=2, pady=2)
 ttk.Button(button_frame, text="Apply", command=apply_changes).grid(row=0, column=1, padx=2, pady=2)
 
-# Center the window
 center_window(root)
-
 root.mainloop()
