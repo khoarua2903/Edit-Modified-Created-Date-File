@@ -35,7 +35,7 @@ This Python application allows users to change the modified and created dates of
 1. Run the application:
 
     ```bash
-    python your_script_name.py
+    python pj_modified_date.py
     ```
 
 2. Use the interface to:
@@ -47,7 +47,7 @@ This Python application allows users to change the modified and created dates of
 
 ## File Structure
 
-- `your_script_name.py`: The main script to run the application.
+- `pj_modified_date.py`: The main script to run the application.
 - `requirements.txt`: List of required Python libraries.
 - `README.md`: Project documentation.
 
